@@ -1,17 +1,20 @@
 # Build Stage
-FROM node:18-alpine as build
+FROM node:20-alpine as build
 
 WORKDIR /app
 
 COPY package*.json ./
 
-RUN npm install
+# Install dependencies including devDeps (Vite, Tailwind plugin, etc.)
+RUN npm install --include=dev
+# or: RUN npm ci --include=dev
 
 COPY . .
 
 ARG VITE_API_URL
 ENV VITE_API_URL=$VITE_API_URL
 
+# Run Vite build
 RUN npm run build
 
 # Production Stage
